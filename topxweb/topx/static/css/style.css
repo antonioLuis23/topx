@@ -1,0 +1,12 @@
+body {
+    padding-left: 10%;
+    padding-right: 10%;
+    font-family: "Open Sans";
+}
+
+#footer {
+	
+	bottom: 0;
+	position: relative;
+}
+

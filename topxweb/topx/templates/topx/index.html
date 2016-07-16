@@ -1,0 +1,80 @@
+﻿{% load staticfiles %}
+<html>
+	<head>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<title>TOP(X)</title>
+	</head>
+	<body>
+		<div  class="page-header">
+            <h1><a href="/topx">TOP(X)</a></h1>
+        </div>
+        <div class =="input-group input-group-lg" >
+			<form action="/topx/" method="post">
+			    {% csrf_token %}
+			    <div class="col-lg-7">
+				    <div class="input-group input-group-lg">
+					  <span class="input-group-addon" id="sizing-addon1">Url</span>
+					  <input type="text" class="form-control" placeholder="Digite a url do produto..." aria-describedby="sizing-addon1" name="url-comment" value="{{url}}">
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<div class="input-group input-group-lg">
+					  <span class="input-group-addon" id="sizing-addon1">Top(X)</span>
+					  <input type="number" class="form-control" placeholder="" aria-describedby="sizing-addon3" name="topx"  min = "1", step="1" value="{{topx}}">
+					</div>
+				</div>
+			    <button type="submit" class="btn btn-default navbar-btn">Calcular</button>
+			</form>
+		</div>
+
+
+		{% if topComment %}
+	
+			<div class="panel panel-default">
+			    
+			<div class="panel-heading">{{nomeProduto}}</div>  
+				<table class="table">
+				    <thead>
+				      <tr>
+				        <th>Autor</th>
+				        <th>Comentário</th>
+				        <th>Polaridade</th>
+						<th>Importancia</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				    	{% for comment in topComment %}
+				      		<tr>
+				        		<td>{{comment.autor}}</td>
+				        		<td>{{comment.comentario}}</td>
+				        		{% if comment.polaridade == "positivo" %}
+				        			<td><span class="label label-success">{{comment.polaridade}}</span></td>
+				        		{% endif %}
+				        		{% if comment.polaridade == "negativo" %}
+				        			<td><span class="label label-danger">{{comment.polaridade}}</span></td>
+				        		{% endif %}
+				        		{% if comment.polaridade == "neutro" %}
+				        			<td><span class="label label-info">{{comment.polaridade}}</span></td>
+				        		{% endif %}
+				        		<td>{{comment.importancia}}</td>
+				      		</tr>
+				       {% endfor %}
+				    </tbody>
+				</table>
+			</div>
+
+		{% else %}
+		  <ol>
+		  	<li><p>Vá ao site <a href = "www.buscape.com.br">buscapé.com.br</a>, pesquise por um produto e selecione-o.</p></li>
+		  	<li><p>Clique em Avaliações dos Consumidores.</p></li>
+		  	<li><p>Copie o link acima e, no campo Top(X), escolha quantos comentários dos mais importantes você deseja que apareça </p></li>
+		  </ol>
+		{% endif %}
+		</div>
+
+	</body>
+
+</html>

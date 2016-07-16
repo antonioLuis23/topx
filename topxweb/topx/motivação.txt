@@ -1,0 +1,4 @@
+motivação
+tree tagger pt-pt
+mac-morpho pt-br
+nltk

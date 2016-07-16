@@ -1,0 +1,10 @@
+
+<h1>TOP(X)</h1>
+
+
+<form action="/topxapp/importancia/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Calcular" />
+    Relevância do comentário: {{relevancia}}
+</form>
