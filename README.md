@@ -1,12 +1,12 @@
-# topx
+# Top(X)
 Ferramenta Top(x) Web para classificação automática da importância de reviews sobre produtos e serviços.
 
-##Dependencias
+##Dependencias:
 MySQL,
 
 Python 3:
 
-  Bibliotecas: nltk, scikit-fuzzy, numpy, matplotlib, django 1.9, BeautifulSoup.
+    Bibliotecas: nltk, scikit-fuzzy, numpy, matplotlib, django 1.9, BeautifulSoup.
 
 ##Instalação:
 
