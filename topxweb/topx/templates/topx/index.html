@@ -42,7 +42,6 @@
 				        <th>Autor</th>
 				        <th>Comentário</th>
 				        <th>Polaridade</th>
-						<th>Importancia</th>
 				      </tr>
 				    </thead>
 				    <tbody>
@@ -59,7 +58,6 @@
 				        		{% if comment.polaridade == "neutro" %}
 				        			<td><span class="label label-info">{{comment.polaridade}}</span></td>
 				        		{% endif %}
-				        		<td>{{comment.importancia}}</td>
 				      		</tr>
 				       {% endfor %}
 				    </tbody>

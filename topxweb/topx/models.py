@@ -9,6 +9,7 @@ class Tipo(models.Model):
 
 class Produto(models.Model):
 	nome = models.CharField(max_length=3500, blank=True, null=True)
+	pol_caracteristica = models.CharField(max_length=3500, blank=True, null=True)
 	tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE,default=None)
 	def __str__(self):
 		return self.nome

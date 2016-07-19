@@ -13,6 +13,7 @@ class TopX(object):
         self.contAutores = {}
         self.comentarios = {}
         self.importancia = {}
+        self.polFeatures = {}
         self.padraoIgual = 0
 
     def sent_adverbio(self, adv, lista_adverbios):
@@ -96,7 +97,11 @@ class TopX(object):
            # pos = dicComentario['POS']
            # neg = dicComentario['NEG']
             id = dicComentario['id']
-
+            comentario1 = re.sub(r'\bdo\b','de o', comentario)
+            comentario2 = re.sub(r'\bda\b','de a', comentario1)
+            comentario3 = re.sub(r'\bdas\b','de as', comentario2)
+            comentario = re.sub(r'\bdos\b','de os', comentario3)
+            
             tokens = nltk.word_tokenize(comentario.lower())
             print('comentario:',comentario)
             tokens=nltk.word_tokenize(comentario.lower())
@@ -119,7 +124,7 @@ class TopX(object):
             """)
             tags2 = []
             for index, classe in enumerate(tags):
-                if 'ART' in classe[1] or 'PROPESS' in classe[1] or 'KC' in classe[1] or 'NUM' in classe[1]:
+                if 'ART' in classe[1] or 'PROPESS' in classe[1] or 'KC' in classe[1] or 'KS' in classe[1]  or 'PROSUB' in classe[1] or 'PROADJ' in classe[1] or 'NUM' in classe[1]:
                     continue
                 else:
                     tags2.append(classe)
@@ -154,6 +159,10 @@ class TopX(object):
                         if feature in frase:      
                             print('frase:',frase)  
                             print('caracteristica:', feature)
+                            if feature in self.polFeatures.keys():
+                                self.polFeatures[feature] =  self.polFeatures[feature]+sentComment
+                            else:
+                                 self.polFeatures[feature] = sentComment;
                             quantPadroes = quantPadroes + 1
             #cursor.execute("UPDATE meusresultados SET PATT = %s WHERE ID = %s", (quantPadroes, id))  
             if quantPadroes > 5:
@@ -181,7 +190,19 @@ class TopX(object):
         #        acerto_negativo = acerto_negativo + 1 
         #    if pos == 1 and neg == 1 and sentComment == 0:
         #        acerto_neutro = acerto_neutro + 1 
-
+        stringFeature =  ''
+        for feature in self.polFeatures.keys():
+            if self.polFeatures[feature] >0:
+                stringFeature +=feature+':positivo;'
+                
+            else:
+                if self.polFeatures[feature]<0:
+                    stringFeature +=feature+':negativo;'
+                else:
+                    stringFeature +=feature+':neutro;'
+        print('stringFeature:', stringFeature)
+        print('id_produto:', id_produto)
+        cursor.execute("UPDATE topx_produto SET pol_caracteristica = %s WHERE id = %s", (stringFeature, id_produto))
         #print('acerto_positivo:', acerto_positivo)
         #print('acerto_negativo:', acerto_negativo)
         #print(' acerto_neutro:', acerto_neutro)

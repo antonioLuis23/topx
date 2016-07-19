@@ -130,6 +130,8 @@ def index(request):
 
 		fim = timeit.default_timer()
 		print ('duracao: %f' % (fim - inicio))
+		p.save()
+		print('p.pol_caracteristica:', p.pol_caracteristica)
 		topComment = p.comentario_set.all().order_by('-importancia')[:topx]
 		return render(request, 'topx/index.html',{'topComment':topComment,'nomeProduto':nomeProd,'url':url,'topx':topx})			
 	#print(soup.select(".review-content p")[0].get_text())
