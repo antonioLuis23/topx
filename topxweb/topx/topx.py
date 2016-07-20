@@ -5,6 +5,7 @@ import timeit
 import re
 from .topxFuzzy import TopxFuzzy
 import json
+import os
 
 class TopX(object):
     def __init__(self):
@@ -61,7 +62,23 @@ class TopX(object):
             return inversor*total_qualificadores
         return 0
 
-    def obtemPadroes(self, result, cursor, id_produto, id_tipo, etiq):
+    def classificaTokens(self, tokens):
+        localpath = os.path.dirname(os.path.abspath(__file__))
+        filepath =localpath+'\mac_morpho.json'
+        with open(filepath, 'r+') as tags_macmorpho_2:
+            etiq2 = json.load(tags_macmorpho_2)
+            tags = []
+            for token in tokens:
+                if token in etiq2.keys():
+                    t = (token, etiq2[token])
+                    tags.append(t)
+                else:
+                    etiq2[token] = "N"    
+                    t = (token, "N")
+                    tags.append(t)
+            return tags            
+
+    def obtemPadroes(self, result, cursor, id_produto, id_tipo):
 
         caracteristicas = []
         acerto_positivo = 0
@@ -105,8 +122,7 @@ class TopX(object):
             tokens = nltk.word_tokenize(comentario.lower())
             print('comentario:',comentario)
             tokens=nltk.word_tokenize(comentario.lower())
-            tags = etiq.tag(tokens)
-            
+            tags = self.classificaTokens(tokens)
             ag = nltk.chunk.RegexpParser(r"""
             PADRAO0: {(<N> | <N> <PREP> <N>) <ADV>? <V> <ADV>? <ADJ>}
             """)
@@ -129,7 +145,6 @@ class TopX(object):
                 else:
                     tags2.append(classe)
             tags = tags2
-            #print('tags:', tags)
             arvore = analiseGramatical.parse(tags)
 
             x1 = self.ExtractPhrases(arvore, "PADRAO1")
@@ -151,10 +166,9 @@ class TopX(object):
             for x in padroes:
                 for frase in x:
                     tokens=nltk.word_tokenize(frase.lower())
-                    tags = etiq.tag(tokens)
+                    tags = self.classificaTokens(tokens)
                     sentPad = self.sentimentoDaTupla(tags, lista_adverbios, sentilex)
                     sentComment = sentComment + sentPad;
-                    #print('frase', frase)   
                     for feature in caracteristicas:
                         if feature in frase:      
                             print('frase:',frase)  
@@ -170,7 +184,6 @@ class TopX(object):
             self.padroes[id]=quantPadroes
 
          #  print('quantPadroes:', quantPadroes)
-        #   name = input("Espere!")
         #   polaridade do comentario               
             print('sentComment',sentComment)
             if sentComment>0:
@@ -236,8 +249,6 @@ class TopX(object):
     def contaAutor(self, result, cursor):
         for dicAutor in result:
             autor = dicAutor['autor']
-
-            #print(dicAutor['autor'])
             if autor in self.autores.keys():
                 if autor == 'e-bit' or autor == '' or autor == 'Consumidor e-bit':
                     self.autores[autor] = 1
@@ -245,7 +256,6 @@ class TopX(object):
                     self.autores[autor] =  self.autores[autor]+1
             else:
                  self.autores[autor] = 1;
-        #print(autores)
 
         for dicAutor in result:
             autor = dicAutor['autor']
@@ -260,6 +270,8 @@ class TopX(object):
 
     def corretudeComentario(self,result, cursor):
         dicionario = []
+        localpath = os.path.dirname(os.path.abspath(__file__))
+        filepath = localpath+'\palavras.ispell'
         with open('C:/djangoScrapy/topxweb/topx/palavras.ispell', 'r', encoding="utf-8") as dict:
             for palavra in dict:
                 dicionario.append(palavra.replace("\n", ""))
@@ -286,7 +298,7 @@ class TopX(object):
             #cursor.execute("UPDATE meusresultados SET CORR = %s WHERE ID = %s", (pct, id))
        
 
-    def main(self, id_produto, id_tipo, etiq):
+    def main(self, id_produto, id_tipo):
         # Connect to the database
         connection = pymysql.connect(host='localhost',
                                      user='root',
@@ -305,7 +317,7 @@ class TopX(object):
 
                 inicio = timeit.default_timer()
                 fuzzy = TopxFuzzy
-                self.obtemPadroes(result_comments, cursor, id_produto, id_tipo, etiq )
+                self.obtemPadroes(result_comments, cursor, id_produto, id_tipo)
                 self.corretudeComentario(result_comments,cursor)
                 self.contaAutor(result_comments, cursor)
                 # with open('C:/relautor.txt', 'w') as outfile:

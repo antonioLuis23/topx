@@ -11,9 +11,8 @@ from urllib.request import urlopen
 from .topx import TopX
 from .topxFuzzy import TopxFuzzy
 import nltk
-from topx.apps import etiq
-#from topxcrawler.spiders import topx_spider
-#etiq = Nones
+#from topx.apps import etiq
+#etiq = None
 # Create your views here.
 
 def try_open_url(url):
@@ -64,16 +63,16 @@ def descobreTipo(soup):
 
 
 def index(request):
-	global etiq
+#	global etiq
 	if request.method == 'GET':
-		inicio = timeit.default_timer()
-		if not etiq:
-			global etiq
-			etiqPadrao = nltk.DefaultTagger('N')  # Usando etiquetas default para os tokens nao reconhecidos
-			sentencas_treinadoras = nltk.corpus.mac_morpho.tagged_sents()[::]
-			etiq = nltk.UnigramTagger(sentencas_treinadoras, backoff=etiqPadrao)
-		fim = timeit.default_timer()
-		print ('duracao: %f' % (fim - inicio))
+		# inicio = timeit.default_timer()
+		# if not etiq:
+		# 	global etiq
+		# 	etiqPadrao = nltk.DefaultTagger('N')  # Usando etiquetas default para os tokens nao reconhecidos
+		# 	sentencas_treinadoras = nltk.corpus.mac_morpho.tagged_sents()[::]
+		# 	etiq = nltk.UnigramTagger(sentencas_treinadoras, backoff=etiqPadrao)
+		# fim = timeit.default_timer()
+		# print ('duracao: %f' % (fim - inicio))
 		return render(request, 'topx/index.html')
 	else:
 		inicio = timeit.default_timer()
@@ -126,7 +125,7 @@ def index(request):
 			p.save()
 
 			top = TopX()
-			top.main(p.id, tipoProd.id, etiq)
+			top.main(p.id, tipoProd.id)
 
 		fim = timeit.default_timer()
 		print ('duracao: %f' % (fim - inicio))
