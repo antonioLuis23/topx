@@ -30,12 +30,62 @@
 			</form>
 		</div>
 
+		{% if marcaInfo %}
+		<h3><a href={{marcaInfo.siteEmpresa}}>{{marcaInfo.nomeEmpresa}}</a></h3>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Dados do <a href="http:\\www.reclameaqui.com.br">Reclame Aqui</a> para os últimos 12 meses. <a href={{marcaInfo.urlReclameAqui}}>Mais informações</a></div>  
+			<div class="padding-left">
+				<div class="block-container">
+					
+					{% if marcaInfo.classificacaoEmpresa == "Ótimo" %}
+						<h3>Classificação da empresa: <span class="label label-success">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+					{% endif %}
+
+					{% if marcaInfo.classificacaoEmpresa == "Bom" %}
+						<h3>Classificação da empresa: <span class="label label-info">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+					{% endif %}
+
+					{% if marcaInfo.classificacaoEmpresa == "regular" %}
+						<h3>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+					{% endif %}
+
+					{% if marcaInfo.classificacaoEmpresa == "Ruim" %}
+						<h3>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+					{% endif %}
+
+					{% if marcaInfo.classificacaoEmpresa == "Não recomendada" %}
+						<h3>Classificação da empresa: <span class="label label-danger">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+					{% endif %}
+				
+				</div>
+				<div class="block-container">
+					<div class="divInline">
+						<p><span class=" reclamacoes green-text">{{marcaInfo.pctAtendidas}}</span><br>Reclamações atendidas</p>
+						<p><span class=" reclamacoes green-text">{{marcaInfo.voltaNegocio}}</span><br>Voltaria a fazer negócio</p>
+						<p><span class=" reclamacoes green-text"> {{marcaInfo.indiceSolucao}}</span><br>Índice de solução</p>
+					</div>
+					<div class="divInline divCentral">
+						<p><span class=" reclamacoes red-text">{{marcaInfo.numReclamacoes}}</span><br>reclamações</p>
+						<p><span class=" reclamacoes green-text">{{marcaInfo.atendidas}}</span><br>atendidas</p>
+						<p><span class=" reclamacoes red-text"> {{marcaInfo.naoAtendidas}}</span><br>não atendidas</p>
+					</div>
+					<div class="divInline">
+						<p><span class=" reclamacoes green-text">{{marcaInfo.tempoDeResposta}}</span><br>Tempo de resposta </p>
+						<p><span class=" reclamacoes green-text">{{marcaInfo.notaConsumidor}}</span><br>Nota do consumidor</p>
+						<p><span class=" reclamacoes green-text"> {{marcaInfo.numAvaliacoes}}</span><br>Avaliações</p>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
 		{% if topComment %}
-	
+			<h3>{{nomeProduto}}</h3>
 			<div class="panel panel-default">
 			    
-			<div class="panel-heading">{{nomeProduto}}</div>  
+				<div class="panel-heading">Comentários do Buscapé</div>  
 				<table class="table">
 				    <thead>
 				      <tr>

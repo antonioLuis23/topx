@@ -184,8 +184,8 @@ class TopX(object):
             self.padroes[id]=quantPadroes
 
          #  print('quantPadroes:', quantPadroes)
-        #   polaridade do comentario               
-            print('sentComment',sentComment)
+        #   polaridade do comentario
+            print('sentComment', sentComment)
             if sentComment>0:
                 cursor.execute("UPDATE topx_comentario SET polaridade = %s WHERE id = %s", ('positivo', id))
                 #num_positivo = num_positivo+1
@@ -200,19 +200,13 @@ class TopX(object):
         #    if pos == 1 and neg == 0 and sentComment >0:
         #        acerto_positivo = acerto_positivo + 1
         #    if pos == 0 and neg == 1 and sentComment <0:
-        #        acerto_negativo = acerto_negativo + 1 
+        #        acerto_negativo = acerto_negativo + 1
         #    if pos == 1 and neg == 1 and sentComment == 0:
-        #        acerto_neutro = acerto_neutro + 1 
-        stringFeature =  ''
+        #        acerto_neutro = acerto_neutro + 1
+        stringFeature = ''
         for feature in self.polFeatures.keys():
-            if self.polFeatures[feature] >0:
-                stringFeature +=feature+':positivo;'
-                
-            else:
-                if self.polFeatures[feature]<0:
-                    stringFeature +=feature+':negativo;'
-                else:
-                    stringFeature +=feature+':neutro;'
+                stringFeature += feature+':'+str(self.polFeatures[feature])+';'
+
         print('stringFeature:', stringFeature)
         print('id_produto:', id_produto)
         cursor.execute("UPDATE topx_produto SET pol_caracteristica = %s WHERE id = %s", (stringFeature, id_produto))
@@ -223,16 +217,13 @@ class TopX(object):
         #print('num_negativo:',num_negativo)
         #print('num_neutro:', num_neutro)
 
-
-
-
     def ExtractPhrases(self, myTree, phrase):
         myPhrases = []
         if (myTree.label() == phrase):
             treeTmp = myTree.copy(True)
-            word=""
+            word = ""
             for w in treeTmp.leaves():
-                if (len(word)==0):
+                if (len(word) == 0):
                     word = w[0]
                 else:
                     word = word+" "+w[0]
@@ -244,8 +235,6 @@ class TopX(object):
                     myPhrases.extend(list_of_phrases)
         return myPhrases
 
-
-
     def contaAutor(self, result, cursor):
         for dicAutor in result:
             autor = dicAutor['autor']
@@ -253,29 +242,27 @@ class TopX(object):
                 if autor == 'e-bit' or autor == '' or autor == 'Consumidor e-bit':
                     self.autores[autor] = 1
                 else:
-                    self.autores[autor] =  self.autores[autor]+1
+                    self.autores[autor] = self.autores[autor]+1
             else:
-                 self.autores[autor] = 1;
+                self.autores[autor] = 1
 
         for dicAutor in result:
             autor = dicAutor['autor']
             id = dicAutor['id']
-            if self.autores[autor]>4:
+            if self.autores[autor] > 4:
                 self.contAutores[id] = 4
             else:
                 self.contAutores[id] = self.autores[autor]
             self.contAutores[id] = self.autores[autor]
             #cursor.execute("UPDATE meusresultados SET REPAUTOR = %s WHERE ID = %s", (self.autores[autor], id))
 
-
-    def corretudeComentario(self,result, cursor):
+    def corretudeComentario(self, result, cursor):
         dicionario = []
         localpath = os.path.dirname(os.path.abspath(__file__))
         filepath = localpath+'\palavras.ispell'
-        with open('C:/djangoScrapy/topxweb/topx/palavras.ispell', 'r', encoding="utf-8") as dict:
+        with open(filepath, 'r', encoding="utf-8") as dict:
             for palavra in dict:
                 dicionario.append(palavra.replace("\n", ""))
-
 
         for dicComentario in result:
             comentario = dicComentario['comentario']
@@ -287,23 +274,22 @@ class TopX(object):
             for word in words:
                 if(word in dicionario):
                     countCorreta = countCorreta+1
-                countWord=countWord+1
+                countWord = countWord+1
             if countWord == 0 or countCorreta == 0:
                 pct = 0
             else:
                 pct = countCorreta/countWord*100
             print("Comentario:", comentario)
-            print("Porcentagem palavras corretas:", pct ,"%")
-            self.comentarios[id]=pct
+            print("Porcentagem palavras corretas:", pct, "%")
+            self.comentarios[id] = pct
             #cursor.execute("UPDATE meusresultados SET CORR = %s WHERE ID = %s", (pct, id))
-       
 
     def main(self, id_produto, id_tipo):
         # Connect to the database
         connection = pymysql.connect(host='localhost',
                                      user='root',
                                      password='Mysql!)@9',
-                                    db='comentariostopx',
+                                     db='comentariostopx',
                                      charset='utf8mb4',
                                      cursorclass=pymysql.cursors.DictCursor)
         try:
@@ -312,13 +298,13 @@ class TopX(object):
                 # Read a single record
                 sql = "SELECT `*` FROM `topx_comentario` WHERE produto_id = %s"
                 cursor.execute(sql, (id_produto))
-                #result_comments = cursor.fetchall()
-                result_comments = cursor.fetchmany(size=100)
+                result_comments = cursor.fetchall()
+                #result_comments = cursor.fetchmany(size=100)
 
                 inicio = timeit.default_timer()
                 fuzzy = TopxFuzzy
                 self.obtemPadroes(result_comments, cursor, id_produto, id_tipo)
-                self.corretudeComentario(result_comments,cursor)
+                self.corretudeComentario(result_comments, cursor)
                 self.contaAutor(result_comments, cursor)
                 # with open('C:/relautor.txt', 'w') as outfile:
                 #     json.dump(self.contAutores, outfile)
@@ -329,14 +315,14 @@ class TopX(object):
 
                 #fuzzy.calculaFuzzy(4,3,88)
                 for key in self.padroes:
+                    print('rep_author:', self.contAutores[key])
                     k = fuzzy.calculaFuzzy(self.contAutores[key], self.padroes[key], self.comentarios[key])
                     self.importancia[key] = k
+
                     cursor.execute("UPDATE topx_comentario SET importancia = %s WHERE id = %s", (k.item(), key))
                 fim = timeit.default_timer()
                 print('self.importancia', self.importancia)
                 print ('duracao: %f' % (fim - inicio))
 
-
         finally:
             connection.close()
-

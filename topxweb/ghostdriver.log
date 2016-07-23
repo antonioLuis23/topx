@@ -1,0 +1,96 @@
+[INFO  - 2016-07-23T03:59:26.787Z] GhostDriver - Main - running on port 57947
+[INFO  - 2016-07-23T03:59:29.483Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2016-07-23T03:59:29.483Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.customHeaders:  - {}
+[INFO  - 2016-07-23T03:59:29.484Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2016-07-23T03:59:29.484Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: dae7e130-5089-11e6-91d1-155e297d1203
+[ERROR - 2016-07-23T03:59:53.284Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23103
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.284Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.285Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23208
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.285Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.285Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23103
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.285Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.285Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23208
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.286Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.286Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23103
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.286Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.286Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Error: undefined is not an object (evaluating 'a.length')
+addDataForGauge@http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:26729
+http://www.reclameaqui.com.br/scripts/scripts.5d3eb7b4.js:5:23208
+$digest@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:88325
+$apply@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:6:1229
+f@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:19761
+q@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29207
+onload@http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5:29750
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:53.286Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:55.075Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - msg: Slot div-gpt-ad-1445634994034-3 has not been defined. Define it using DoubleClickProvider.defineSlot().
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2016-07-23T03:59:55.076Z] Session [dae7e130-5089-11e6-91d1-155e297d1203] - page.onError - stack:
+  (anonymous function) (http://www.reclameaqui.com.br/scripts/vendor.6c684fbb.js:5)
+
+  phantomjs://platform/console++.js:263 in error
