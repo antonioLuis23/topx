@@ -78,7 +78,7 @@ class TopX(object):
                     tags.append(t)
             return tags            
 
-    def obtemPadroes(self, result, cursor, id_produto, id_tipo):
+    def obtemRepPadroesCorretude(self, result, cursor, id_produto, id_tipo):
 
         caracteristicas = []
         acerto_positivo = 0
@@ -87,7 +87,13 @@ class TopX(object):
         num_positivo = 0
         num_negativo = 0
         num_neutro = 0
-
+        count = 1
+        dicionario = []
+        localpath = os.path.dirname(os.path.abspath(__file__))
+        filepath = localpath+'\palavras.ispell'
+        with open(filepath, 'r', encoding="utf-8") as dict:
+            for palavra in dict:
+                dicionario.append(palavra.replace("\n", ""))
 
         sql = "SELECT `*` FROM `adverblist`"
         cursor.execute(sql)
@@ -105,14 +111,15 @@ class TopX(object):
         #with open('C:/djangoScrapy/topxweb/topx/caracteristicas.txt', 'r', encoding="utf-8") as dict:
         #    for palavra in dict:
         #        caracteristicas.append(palavra.replace("\n", ""))
-        
         #etiqPadrao = nltk.DefaultTagger('N')  # Usando etiquetas default para os tokens nao reconhecidos
         #sentencas_treinadoras = nltk.corpus.mac_morpho.tagged_sents()[::]
         #etiq = nltk.UnigramTagger(sentencas_treinadoras, backoff=etiqPadrao)
         for dicComentario in result:
+            print('processando comentário '+str(count))
+            count += 1
             comentario = dicComentario['comentario']
-           # pos = dicComentario['POS']
-           # neg = dicComentario['NEG']
+            # pos = dicComentario['POS']
+            # neg = dicComentario['NEG']
             id = dicComentario['id']
             comentario1 = re.sub(r'\bdo\b','de o', comentario)
             comentario2 = re.sub(r'\bda\b','de a', comentario1)
@@ -120,8 +127,31 @@ class TopX(object):
             comentario = re.sub(r'\bdos\b','de os', comentario3)
             
             tokens = nltk.word_tokenize(comentario.lower())
-            print('comentario:',comentario)
-            tokens=nltk.word_tokenize(comentario.lower())
+
+            #calculando porcentagem de palavras corretas
+            words = [w.lower() for w in tokens if w.isalnum()]
+            countCorreta = 0
+            countWord = 0
+            for word in words:
+                if(word in dicionario):
+                    countCorreta = countCorreta+1
+                countWord = countWord+1
+            if countWord == 0 or countCorreta == 0:
+                pct = 0
+            else:
+                pct = countCorreta/countWord*100
+            #print("Comentario:", comentario)
+            #print("Porcentagem palavras corretas:", pct, "%")
+            self.comentarios[id] = pct
+
+            #calculando reputação de autor
+            numComments = dicComentario['reputacaoAutor']
+            if numComments > 4:
+                self.contAutores[id] = 4
+            else:
+                self.contAutores[id] = numComments
+
+            #calculando quantidade de padrões
             tags = self.classificaTokens(tokens)
             ag = nltk.chunk.RegexpParser(r"""
             PADRAO0: {(<N> | <N> <PREP> <N>) <ADV>? <V> <ADV>? <ADJ>}
@@ -153,13 +183,13 @@ class TopX(object):
             x4 = self.ExtractPhrases(arvore, "PADRAO4")
             x5 = self.ExtractPhrases(arvore, "PADRAO5")
             x6 = self.ExtractPhrases(arvore, "PADRAO6")
-            print('suj+ver+predSuj:', x0)
-            print('x1:', x1)
-            print('x2:', x2)
-            print('x3:', x3)
-            print('x4:', x4)
-            print('x5:', x5)
-            print('x6:', x6)
+            # print('suj+ver+predSuj:', x0)
+            # print('x1:', x1)
+            # print('x2:', x2)
+            # print('x3:', x3)
+            # print('x4:', x4)
+            # print('x5:', x5)
+            # print('x6:', x6)
             padroes = [x0, x1, x2, x3, x4, x5, x6]
             quantPadroes = 0;
             sentComment = 0
@@ -171,8 +201,8 @@ class TopX(object):
                     sentComment = sentComment + sentPad;
                     for feature in caracteristicas:
                         if feature in frase:      
-                            print('frase:',frase)  
-                            print('caracteristica:', feature)
+                        #    print('frase:',frase)  
+                        #    print('caracteristica:', feature)
                             if feature in self.polFeatures.keys():
                                 self.polFeatures[feature] =  self.polFeatures[feature]+sentComment
                             else:
@@ -185,7 +215,7 @@ class TopX(object):
 
          #  print('quantPadroes:', quantPadroes)
         #   polaridade do comentario
-            print('sentComment', sentComment)
+          #  print('sentComment', sentComment)
             if sentComment>0:
                 cursor.execute("UPDATE topx_comentario SET polaridade = %s WHERE id = %s", ('positivo', id))
                 #num_positivo = num_positivo+1
@@ -235,53 +265,41 @@ class TopX(object):
                     myPhrases.extend(list_of_phrases)
         return myPhrases
 
-    def contaAutor(self, result, cursor):
-        for dicAutor in result:
-            autor = dicAutor['autor']
-            if autor in self.autores.keys():
-                if autor == 'e-bit' or autor == '' or autor == 'Consumidor e-bit':
-                    self.autores[autor] = 1
-                else:
-                    self.autores[autor] = self.autores[autor]+1
-            else:
-                self.autores[autor] = 1
+    # def contaAutor(self, result, cursor):
+    #     for dicAutor in result:
+    #         numComments = dicAutor['reputacaoAutor']
+    #         id = dicAutor['id']
+    #         if numComments > 4:
+    #             self.contAutores[id] = 4
+    #         else:
+    #             self.contAutores[id] = numComments
 
-        for dicAutor in result:
-            autor = dicAutor['autor']
-            id = dicAutor['id']
-            if self.autores[autor] > 4:
-                self.contAutores[id] = 4
-            else:
-                self.contAutores[id] = self.autores[autor]
-            self.contAutores[id] = self.autores[autor]
-            #cursor.execute("UPDATE meusresultados SET REPAUTOR = %s WHERE ID = %s", (self.autores[autor], id))
+    # def corretudeComentario(self, result, cursor):
+    #     dicionario = []
+    #     localpath = os.path.dirname(os.path.abspath(__file__))
+    #     filepath = localpath+'\palavras.ispell'
+    #     with open(filepath, 'r', encoding="utf-8") as dict:
+    #         for palavra in dict:
+    #             dicionario.append(palavra.replace("\n", ""))
 
-    def corretudeComentario(self, result, cursor):
-        dicionario = []
-        localpath = os.path.dirname(os.path.abspath(__file__))
-        filepath = localpath+'\palavras.ispell'
-        with open(filepath, 'r', encoding="utf-8") as dict:
-            for palavra in dict:
-                dicionario.append(palavra.replace("\n", ""))
-
-        for dicComentario in result:
-            comentario = dicComentario['comentario']
-            id = dicComentario['id']
-            tokens = nltk.word_tokenize(comentario)
-            words = [w.lower() for w in tokens if w.isalnum()]
-            countCorreta = 0
-            countWord = 0
-            for word in words:
-                if(word in dicionario):
-                    countCorreta = countCorreta+1
-                countWord = countWord+1
-            if countWord == 0 or countCorreta == 0:
-                pct = 0
-            else:
-                pct = countCorreta/countWord*100
-            print("Comentario:", comentario)
-            print("Porcentagem palavras corretas:", pct, "%")
-            self.comentarios[id] = pct
+    #     for dicComentario in result:
+    #         comentario = dicComentario['comentario']
+    #         id = dicComentario['id']
+    #         tokens = nltk.word_tokenize(comentario)
+    #         words = [w.lower() for w in tokens if w.isalnum()]
+    #         countCorreta = 0
+    #         countWord = 0
+    #         for word in words:
+    #             if(word in dicionario):
+    #                 countCorreta = countCorreta+1
+    #             countWord = countWord+1
+    #         if countWord == 0 or countCorreta == 0:
+    #             pct = 0
+    #         else:
+    #             pct = countCorreta/countWord*100
+    #         print("Comentario:", comentario)
+    #         print("Porcentagem palavras corretas:", pct, "%")
+    #         self.comentarios[id] = pct
             #cursor.execute("UPDATE meusresultados SET CORR = %s WHERE ID = %s", (pct, id))
 
     def main(self, id_produto, id_tipo):
@@ -303,9 +321,9 @@ class TopX(object):
 
                 inicio = timeit.default_timer()
                 fuzzy = TopxFuzzy
-                self.obtemPadroes(result_comments, cursor, id_produto, id_tipo)
-                self.corretudeComentario(result_comments, cursor)
-                self.contaAutor(result_comments, cursor)
+                self.obtemRepPadroesCorretude(result_comments, cursor, id_produto, id_tipo)
+               # self.corretudeComentario(result_comments, cursor)
+                #self.contaAutor(result_comments, cursor)
                 # with open('C:/relautor.txt', 'w') as outfile:
                 #     json.dump(self.contAutores, outfile)
                 # with open('C:/padroes.txt', 'w') as outfile:

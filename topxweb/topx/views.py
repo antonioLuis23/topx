@@ -72,10 +72,26 @@ def read_url(url, p, queue):
     votos_positivos = soup.select(".pros.ico-label")
     votos_negativos = soup.select(".contras.ico-label")
     for index, coment in enumerate(comentarios):
+        numComments = 0
+        perfil = autores[index]
+        if autores[index].has_attr('href'):
+            urlPerfil = autores[index]['href']
+            comecoNome = urlPerfil.find('-')
+            fimNome = urlPerfil.rfind('.')
+            nomeUser = urlPerfil[comecoNome+1:fimNome]
+            comecoUid = urlPerfil.find('=')
+            uid = urlPerfil[comecoUid+1:]
+            urlCommentProd = 'http://www.buscape.com.br/opinioes-de-'+nomeUser+'-produtos?UsuarioID='+uid+'&tpopn=prd'
+            htmlPerfil = try_open_url(urlCommentProd)
+            soupPerfil = BeautifulSoup(htmlPerfil, "lxml")
+            numComments = len(soupPerfil.select(".line h3"))
+            print('type(numComments):', type(numComments), 'numComments:', numComments) 
         coment = p.comentario_set.all().filter(comentario=comentarios[index].get_text())
         if not coment:
+            if numComments == 0:
+                numComments = 1
             p.comentario_set.create(comentario=comentarios[index].get_text(), autor=autores[index].get_text(),
-                voto_positivo=votos_positivos[index].get_text(), voto_negativo=votos_negativos[index].get_text(), recomenda=recomendacoes[index].get_text())
+                voto_positivo=votos_positivos[index].get_text(), voto_negativo=votos_negativos[index].get_text(), recomenda=recomendacoes[index].get_text(), reputacaoAutor=numComments)
 
 
 def getComentarios(url, topx, nomeProduto):
@@ -138,8 +154,8 @@ def descobreMarca(soup):
 
 
 def procuraMarca(marca):
-    #driver = webdriver.PhantomJS(executable_path='/Users/Antonio/node_modules/phantomjs/lib/phantom/bin/phantomjs')
-    driver = webdriver.Firefox()
+    driver = webdriver.PhantomJS(executable_path='/Users/Antonio/node_modules/phantomjs/lib/phantom/bin/phantomjs')
+    #driver = webdriver.Firefox()
     marcaInfo = {}
     driver.get("http://www.reclameaqui.com.br/busca/?q="+marca)
 
