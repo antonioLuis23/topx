@@ -8,26 +8,36 @@
 		<title>TOP(X)</title>
 	</head>
 	<body>
-		<div  class="page-header">
-            <h1><a href="/topx">TOP(X)</a></h1>
-        </div>
-        <div class =="input-group input-group-lg" >
-			<form action="/topx/" method="post">
-			    {% csrf_token %}
-			    <div class="col-lg-7">
-				    <div class="input-group input-group-lg">
-					  <span class="input-group-addon" id="sizing-addon1">Url</span>
-					  <input type="text" class="form-control" placeholder="Digite a url do produto..." aria-describedby="sizing-addon1" name="url-comment" value="{{url}}">
+		<header  class="page-header">
+            <h1><code><a href="/topx">TOP(X)</a></code></h1>
+        </header>
+        <div class="pesquisa">
+	        <div class =="input-group input-group-lg" >
+				<form action="/topx/" method="post">
+				    {% csrf_token %}
+				    <div class="col-lg-7">
+					    <div class="input-group input-group-lg card-shadow">
+						  <span class="input-group-addon" id="sizing-addon1">URL</span>
+						  <input type="text" class="form-control" placeholder="Digite a url do produto..." aria-describedby="sizing-addon1" name="url-comment" value="{{url}}">
+						</div>
 					</div>
-				</div>
-				<div class="col-lg-3">
-					<div class="input-group input-group-lg">
-					  <span class="input-group-addon" id="sizing-addon1">Top(X)</span>
-					  <input type="number" class="form-control" placeholder="" aria-describedby="sizing-addon3" name="topx"  min = "1", step="1" value="{{topx}}">
+					<div class="col-lg-3">
+						<div class="input-group input-group-lg card-shadow">
+						  <span class="input-group-addon" id="sizing-addon1">TOP(X)</span>
+						  <input type="number" class="form-control" placeholder="" aria-describedby="sizing-addon3" name="topx"  min = "1", step="1" value="{{topx}}">
+						</div>
 					</div>
-				</div>
-			    <button type="submit" class="btn btn-default navbar-btn">Calcular</button>
-			</form>
+				    <button type="submit" class="btn btn-default my-btn card-shadow">PESQUISAR</button>
+				</form>
+			</div>
+			{% if topComment %}
+			{% else %}
+			  <ol>
+			  	<li><p>Vá ao site <a href = "www.buscape.com.br">buscapé.com.br</a>, pesquise por um produto e selecione-o.</p></li>
+			  	<li><p>Clique em Avaliações dos Consumidores.</p></li>
+			  	<li><p>Cole o link acima e, no campo TOP(X), escolha quantos comentários dos mais importantes você deseja que apareça </p></li>
+			  </ol>
+			{% endif %}
 		</div>
 
 		{% if marcaInfo %}
@@ -39,23 +49,23 @@
 				<div class="block-container">
 					
 					{% if marcaInfo.classificacaoEmpresa == "Ótimo" %}
-						<h3>Classificação da empresa: <span class="label label-success">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+						<h4>Classificação da empresa: <span class="label label-success">{{marcaInfo.classificacaoEmpresa}}</span></h4>
 					{% endif %}
 
 					{% if marcaInfo.classificacaoEmpresa == "Bom" %}
-						<h3>Classificação da empresa: <span class="label label-info">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+						<h4>Classificação da empresa: <span class="label label-info">{{marcaInfo.classificacaoEmpresa}}</span></h4>
 					{% endif %}
 
 					{% if marcaInfo.classificacaoEmpresa == "regular" %}
-						<h3>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+						<h4>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h4>
 					{% endif %}
 
 					{% if marcaInfo.classificacaoEmpresa == "Ruim" %}
-						<h3>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+						<h4>Classificação da empresa: <span class="label label-warning">{{marcaInfo.classificacaoEmpresa}}</span></h4>
 					{% endif %}
 
 					{% if marcaInfo.classificacaoEmpresa == "Não recomendada" %}
-						<h3>Classificação da empresa: <span class="label label-danger">{{marcaInfo.classificacaoEmpresa}}</span></h3>
+						<h4>Classificação da empresa: <span class="label label-danger">{{marcaInfo.classificacaoEmpresa}}</span></h4>
 					{% endif %}
 				
 				</div>
@@ -115,14 +125,8 @@
 				    </tbody>
 				</table>
 			</div>
+			{% endif %}
 
-		{% else %}
-		  <ol>
-		  	<li><p>Vá ao site <a href = "www.buscape.com.br">buscapé.com.br</a>, pesquise por um produto e selecione-o.</p></li>
-		  	<li><p>Clique em Avaliações dos Consumidores.</p></li>
-		  	<li><p>Copie o link acima e, no campo Top(X), escolha quantos comentários dos mais importantes você deseja que apareça </p></li>
-		  </ol>
-		{% endif %}
 		</div>
 
 	</body>

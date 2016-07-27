@@ -1,7 +1,71 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
 body {
-    padding-left: 10%;
-    padding-right: 10%;
-    font-family: "Open Sans";
+  	margin: 0 auto;
+  	max-width: 80%;
+    font-family: "Roboto","Helvetica", "Arial", sans-serif;
+    line-height: 1.6;
+    color: #566b78;
+}
+td{
+	font-size:17px;
+	line-height:1.8 !important;
+
+}
+h2 {
+  margin-top: 1em;
+  padding-top: 1em;
+}
+
+code{
+	background-color:#ffffff;
+}
+
+h1,
+h2,
+strong {
+  	color: #333;
+}
+
+a {
+  	color: #e81c4f;
+}
+h3{
+	color: #e81c4f;	
+}
+
+.card-shadow{
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26) !important;
+}
+
+.my-btn{
+	height:9%;
+	border-radius:0px;
+	background-image:none !important;
+	color:#e81c4f;
+}
+.my-btn:hover{
+	color:#e81c4f !important;
+	background-color: #efefef;
+}
+input:focus{
+	border-color: #e60000 !important;
+	outline: none;
+	box-shadow: none !important;
+
+}
+input:hover{
+
+
+}
+
+.input-group-addon{
+	border-radius:0px !important;
+	color: #d80606 !important;
+	background-color:#fff;
+}
+
+.form-control{
+	border-radius:0px !important;
 }
 
 #footer {
