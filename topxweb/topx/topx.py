@@ -64,7 +64,7 @@ class TopX(object):
 
     def classificaTokens(self, tokens):
         localpath = os.path.dirname(os.path.abspath(__file__))
-        filepath =localpath+'\mac_morpho.json'
+        filepath = localpath+'\mac_morpho.json'
         with open(filepath, 'r+') as tags_macmorpho_2:
             etiq2 = json.load(tags_macmorpho_2)
             tags = []
@@ -73,10 +73,10 @@ class TopX(object):
                     t = (token, etiq2[token])
                     tags.append(t)
                 else:
-                    etiq2[token] = "N"    
+                    etiq2[token] = "N"
                     t = (token, "N")
                     tags.append(t)
-            return tags            
+            return tags
 
     def obtemRepPadroesCorretude(self, result, cursor, id_produto, id_tipo):
 
@@ -203,20 +203,20 @@ class TopX(object):
                         if feature in frase:      
                         #    print('frase:',frase)  
                         #    print('caracteristica:', feature)
-                            if feature in self.polFeatures.keys():
-                                self.polFeatures[feature] =  self.polFeatures[feature]+sentComment
-                            else:
-                                 self.polFeatures[feature] = sentComment;
+                        #    if feature in self.polFeatures.keys():
+                        #        self.polFeatures[feature] = self.polFeatures[feature]+sentComment
+                        #    else:
+                        #         self.polFeatures[feature] = sentComment;
                             quantPadroes = quantPadroes + 1
             #cursor.execute("UPDATE meusresultados SET PATT = %s WHERE ID = %s", (quantPadroes, id))  
             if quantPadroes > 5:
                 quantPadroes = 5
-            self.padroes[id]=quantPadroes
+            self.padroes[id] = quantPadroes
 
          #  print('quantPadroes:', quantPadroes)
         #   polaridade do comentario
           #  print('sentComment', sentComment)
-            if sentComment>0:
+            if sentComment > 0:
                 cursor.execute("UPDATE topx_comentario SET polaridade = %s WHERE id = %s", ('positivo', id))
                 #num_positivo = num_positivo+1
             else:
@@ -233,13 +233,13 @@ class TopX(object):
         #        acerto_negativo = acerto_negativo + 1
         #    if pos == 1 and neg == 1 and sentComment == 0:
         #        acerto_neutro = acerto_neutro + 1
-        stringFeature = ''
-        for feature in self.polFeatures.keys():
-                stringFeature += feature+':'+str(self.polFeatures[feature])+';'
+        #stringFeature = ''
+        #for feature in self.polFeatures.keys():
+        #        stringFeature += feature+':'+str(self.polFeatures[feature])+';'
 
-        print('stringFeature:', stringFeature)
-        print('id_produto:', id_produto)
-        cursor.execute("UPDATE topx_produto SET pol_caracteristica = %s WHERE id = %s", (stringFeature, id_produto))
+        #print('stringFeature:', stringFeature)
+        #print('id_produto:', id_produto)
+        #cursor.execute("UPDATE topx_produto SET pol_caracteristica = %s WHERE id = %s", (stringFeature, id_produto))
         #print('acerto_positivo:', acerto_positivo)
         #print('acerto_negativo:', acerto_negativo)
         #print(' acerto_neutro:', acerto_neutro)

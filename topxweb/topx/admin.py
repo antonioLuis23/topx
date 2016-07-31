@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Comentario, Produto, Tipo
+from .models import Comentario, Produto, Tipo, Marca
 
 class ComentarioInline(admin.TabularInline):
     model = Comentario
@@ -13,3 +13,4 @@ class ProdutoAdmin(admin.ModelAdmin):
 
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Tipo)
+admin.site.register(Marca)

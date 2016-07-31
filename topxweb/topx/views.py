@@ -2,7 +2,7 @@ from django.shortcuts import render
 from bs4 import BeautifulSoup
 import time
 import timeit
-from .models import Produto, Tipo
+from .models import Produto, Tipo, Marca
 from urllib.request import urlopen
 from .topx import TopX
 from selenium import webdriver
@@ -85,7 +85,7 @@ def read_url(url, p, queue):
             htmlPerfil = try_open_url(urlCommentProd)
             soupPerfil = BeautifulSoup(htmlPerfil, "lxml")
             numComments = len(soupPerfil.select(".line h3"))
-            print('type(numComments):', type(numComments), 'numComments:', numComments) 
+            print('type(numComments):', type(numComments), 'numComments:', numComments)
         coment = p.comentario_set.all().filter(comentario=comentarios[index].get_text())
         if not coment:
             if numComments == 0:
@@ -105,7 +105,20 @@ def getComentarios(url, topx, nomeProduto):
         p = p[0]
     print('p:', p)
     if not p:
-        p = tipoProd.produto_set.create(nome=nomeProduto)
+        precoProd = soup.select(".price .price__value")[0].get_text()
+        print('precoProd:', precoProd, 'len(precoProd):',len(precoProd))
+        url_image_prod = soup.select(".load-gallery img")[0]['src']
+
+        r = try_open_url('https://www.youtube.com/results?hl=pt&search_query='+nomeProduto.replace('-','+')+'&gl=BR')
+        soupYoutube = BeautifulSoup(r, "lxml")
+
+        href_youtube = soupYoutube.select('.yt-lockup-title a')[0]['href']
+        position = href_youtube.find('=')
+
+        url_yt = 'https://www.youtube.com/embed/'+href_youtube[position+1:]
+        print('url_youtube:', url_yt)
+
+        p = tipoProd.produto_set.create(nome=nomeProduto, preco=precoProd, url_imagem=url_image_prod, url_youtube=url_yt)
         p.save()
         urlParcial = "http://www.buscape.com.br/avaliacoes/" + nomeProduto + "/?pagina="
         numeros = soup.select("ul.pages-list > li > a.item")
@@ -123,7 +136,6 @@ def getComentarios(url, topx, nomeProduto):
         for i in range(1, maior+1):
             urlFinal = urlParcial + str(i)
             urls_to_load.append(urlFinal)
-        print('entrou?')
         result = Queue()
 
         threads = [threading.Thread(target=read_url, args=(url, p, result)) for url in urls_to_load]
@@ -139,7 +151,7 @@ def getComentarios(url, topx, nomeProduto):
         top = TopX()
         top.main(p.id, tipoProd.id)
 
-    return p.comentario_set.all().order_by('-importancia')[:topx]
+    return p
 
 
 def descobreMarca(soup):
@@ -156,19 +168,16 @@ def descobreMarca(soup):
 def procuraMarca(marca):
     driver = webdriver.PhantomJS(executable_path='/Users/Antonio/node_modules/phantomjs/lib/phantom/bin/phantomjs')
     #driver = webdriver.Firefox()
-    marcaInfo = {}
     driver.get("http://www.reclameaqui.com.br/busca/?q="+marca)
 
     try:
-        # we have to wait for the page to refresh, the last thing that seems to be updated is the title
         WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, '.business-name .ng-binding')))
 
-        # You should see "cheese! - Google Search"
-        # print(driver.page_source)
         soupBusca = BeautifulSoup(driver.page_source, "lxml")
         empresaUrl = soupBusca.select('.business-name .ng-binding')[0]['href']
         empresaUrlComp = 'http://www.reclameaqui.com.br'+empresaUrl
-        marcaInfo['urlReclameAqui'] = empresaUrlComp
+        marca = Marca()
+        marca.url_reclame_aqui = empresaUrlComp
         driver.get(empresaUrlComp)
 
         try:
@@ -176,40 +185,39 @@ def procuraMarca(marca):
             soupEmpresa = BeautifulSoup(driver.page_source, "lxml")
 
             reclamacoes = soupEmpresa.select('.all-complaints p')[0].get_text()
-            marcaInfo['numReclamacoes'] = reclamacoes
+            marca.num_reclamacoes = int(reclamacoes)
 
             atendidas = soupEmpresa.select('.complaints-answered p')[0].get_text()
-            marcaInfo['atendidas'] = atendidas
+            marca.num_atendidas = int(atendidas)
 
             naoAtendidas = soupEmpresa.select('.complaints-unanswered p')[0].get_text()
-            marcaInfo['naoAtendidas'] = naoAtendidas
+            marca.num_nao_atendidas = int(naoAtendidas)
 
             nomeEmpresa = soupEmpresa.select('.business-name-site h1')[0].get_text()
-            marcaInfo['nomeEmpresa'] = nomeEmpresa
+            marca.nome = nomeEmpresa
 
             classificacaoEmpresa = soupEmpresa.select('.business-seal p')[0].get_text()
-            marcaInfo['classificacaoEmpresa'] = classificacaoEmpresa
+            marca.recomendacao = classificacaoEmpresa
 
-            siteEmpresa = 'http://'+soupEmpresa.select('.business-contact-info a')[0].get_text()
-            marcaInfo['siteEmpresa'] = siteEmpresa
+            siteEmpresa = "" if not soupEmpresa.select('.business-contact-info a') else 'http://'+soupEmpresa.select('.business-contact-info a')[0].get_text()
+            marca.url_marca = siteEmpresa
 
             tempoDeResposta = soupEmpresa.select('.reply-time .ng-binding')[0].get_text()
-            marcaInfo['tempoDeResposta'] = tempoDeResposta
+            marca.tempo_resposta = tempoDeResposta
 
             notaConsumidor = soupEmpresa.select('.user-rating .ng-binding')[0].get_text()
-            marcaInfo['notaConsumidor'] = notaConsumidor
+            marca.nota_consumidor = float(notaConsumidor)
 
             numAvaliacoes = soupEmpresa.select('.all-ratings .ng-binding')[0].get_text()
-            marcaInfo['numAvaliacoes'] = numAvaliacoes
+            marca.num_avaliacoes = int(numAvaliacoes)
 
             porcentagens = soupEmpresa.select('.legend-value')
 
-            marcaInfo['pctAtendidas'] = porcentagens[0].get_text()
-            marcaInfo['voltaNegocio'] = porcentagens[1].get_text()
-            marcaInfo['indiceSolucao'] = porcentagens[2].get_text()
-
-            print('marcaInfo:', marcaInfo)
-            return marcaInfo
+            marca.pct_atendidas = float(porcentagens[0].get_text()[:-1])
+            marca.volta_negocio = float(porcentagens[1].get_text()[:-1])
+            marca.indice_solucao = float(porcentagens[2].get_text()[:-1])
+            marca.save()
+            return marca
 
         finally:
             driver.quit()
@@ -224,9 +232,13 @@ def getInfoMarca(url):
     soup = BeautifulSoup(r, "lxml")
     marca = descobreMarca(soup)
     print('marca:', marca)
-    marcaInfo = procuraMarca(marca)
-    fim = timeit.default_timer()
-    print ('duracao obtendo informação da marca: %f' % (fim - inicio))
+    marcaInfo = Marca.objects.filter(nome__icontains=marca)
+    if len(marcaInfo) > 0:
+        marcaInfo = marcaInfo[0]
+    if not marcaInfo:
+        marcaInfo = procuraMarca(marca)
+        fim = timeit.default_timer()
+        print ('duracao obtendo informação da marca: %f' % (fim - inicio))
     return marcaInfo
 
 
@@ -245,13 +257,17 @@ def index(request):
     else:
         url = request.POST.get('url-comment')
         topx = int(request.POST.get('topx'))
-        indexFinal = url.index('#')
-        nomeProduto = url[26:indexFinal]
+        if '#' in url:
+            indexFinal = url.index('#')
+            nomeProduto = url[26:indexFinal]
+        else:
+            nomeProduto = url[26:]
         nomeSemTraco = nomeProduto.replace("-", " ")
         inicio = timeit.default_timer()
-        topComment = getComentarios(url, topx, nomeProduto)
+        p = getComentarios(url, topx, nomeProduto)
+        topComment = p.comentario_set.all().order_by('-importancia')[:topx]
         fim = timeit.default_timer()
         print ('duracao obtendo e classificando comentários: %f' % (fim - inicio))
         marcaInfo = getInfoMarca(url)
-        print('marcaInfo', marcaInfo)
-        return render(request, 'topx/index.html', {'topComment': topComment, 'nomeProduto': nomeSemTraco, 'url': url, 'topx': topx, 'marcaInfo':marcaInfo})
+
+        return render(request, 'topx/index.html', {'topComment': topComment, 'nomeProduto': nomeSemTraco, 'url': url, 'topx': topx, 'marcaInfo': marcaInfo, 'prod':p})

@@ -8,10 +8,33 @@ class Tipo(models.Model):
     def __str__(self):
         return self.nome
 
+
 class Produto(models.Model):
-    nome = models.CharField(max_length=3500, blank=True, null=True)
+    nome = models.CharField(max_length=1000, blank=True, null=True)
+    preco = models.CharField(max_length=1000, blank=True, null=True)
+    url_imagem = models.CharField(max_length=1000, blank=True, null=True)
     pol_caracteristica = models.CharField(max_length=3500, blank=True, null=True)
-    tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE,default=None)
+    url_youtube = models.CharField(max_length=1000, blank=True, null=True)
+    tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE, default=None)
+
+    def __str__(self):
+        return self.nome
+
+
+class Marca(models.Model):
+    nome = models.CharField(max_length=255, blank=True, null=True)
+    recomendacao = models.CharField(max_length=255, blank=True, null=True)
+    num_reclamacoes = models.IntegerField(blank=True, null=True)
+    num_atendidas = models.IntegerField(blank=True, null=True)
+    num_nao_atendidas = models.IntegerField(blank=True, null=True)
+    tempo_resposta = models.CharField(max_length=50, blank=True, null=True)
+    nota_consumidor = models.FloatField(blank=True, null=True)
+    num_avaliacoes = models.IntegerField(blank=True, null=True)
+    pct_atendidas = models.FloatField(blank=True, null=True)
+    volta_negocio = models.FloatField(blank=True, null=True)
+    indice_solucao = models.FloatField(blank=True, null=True)
+    url_marca = models.CharField(max_length=255, blank=True, null=True)
+    url_reclame_aqui = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.nome
