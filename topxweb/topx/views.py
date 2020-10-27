@@ -166,7 +166,7 @@ def descobreMarca(soup):
 
 
 def procuraMarca(marca):
-    driver = webdriver.PhantomJS(executable_path='/Users/Antonio/node_modules/phantomjs/lib/phantom/bin/phantomjs')
+    driver = webdriver.PhantomJS(executable_path='/Users/anton/AppData/Roaming/npm/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs')
     #driver = webdriver.Firefox()
     driver.get("http://www.reclameaqui.com.br/busca/?q="+marca)
 
